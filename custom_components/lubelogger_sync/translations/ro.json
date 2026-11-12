@@ -1,0 +1,198 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectare la LubeLogger",
+        "description": "Creați o cheie API în LubeLogger (Settings → API Keys) cu rolul **Editor**. O cheie Viewer poate citi reminderele, dar nu poate adăuga înregistrări de odometru.",
+        "data": {
+          "url": "URL LubeLogger",
+          "api_key": "Cheie API"
+        },
+        "data_description": {
+          "url": "Adresa la care deschideți LubeLogger în browser, inclusiv portul."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nu mă pot conecta la LubeLogger la acest URL.",
+      "invalid_auth": "LubeLogger a respins cheia API.",
+      "unknown": "Răspuns neașteptat de la LubeLogger. Verificați URL-ul și versiunea serverului."
+    },
+    "abort": {
+      "already_configured": "Acest server LubeLogger este deja configurat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "LubeLogger Sync",
+        "menu_options": {
+          "vehicle": "Sursa de kilometraj a unei mașini",
+          "settings": "Programul sincronizării și setări"
+        }
+      },
+      "vehicle": {
+        "title": "Mașină",
+        "description": "Alegeți mașina de configurat. Mașinile marcate cu ✓ au deja o sursă de kilometraj.",
+        "data": {
+          "vehicle": "Mașină"
+        }
+      },
+      "source": {
+        "title": "Sursa de kilometraj – {vehicle}",
+        "description": "LubeLogger are acum **{odometer}** pentru această mașină.\n\nAlegeți o entitate (un senzor sau un device tracker, de exemplu Traccar – atributul se alege la pasul următor) **sau** scrieți un template. Lăsați ambele goale pentru a opri sincronizarea acestei mașini.",
+        "data": {
+          "entity_id": "Entitate",
+          "template": "Template (opțional, are prioritate față de entitate)"
+        },
+        "data_description": {
+          "entity_id": "Starea ei sau unul dintre atribute conține kilometrajul.",
+          "template": "Trebuie să dea direct kilometrajul final (fără multiplicator sau offset). Vedeți un exemplu în README."
+        }
+      },
+      "entity": {
+        "title": "Sursa de kilometraj – {vehicle}",
+        "description": "Sursă: `{entity}`\n\nValoarea cu setările propuse: **{preview}** — LubeLogger are acum: **{odometer}**.\n\nKilometraj = valoare × multiplicator + offset.",
+        "data": {
+          "attribute": "Atribut",
+          "multiplier": "Multiplicator",
+          "offset": "Offset"
+        },
+        "data_description": {
+          "attribute": "Lăsați gol pentru a folosi starea entității. Traccar: totalDistance.",
+          "multiplier": "0.001 transformă metrii (Traccar) în kilometri; 0.000621371 transformă metrii în mile.",
+          "offset": "Se adaugă după înmulțire, pentru a corecta diferența dintre distanța GPS și kilometrajul real de la bord."
+        }
+      },
+      "settings": {
+        "title": "Programul sincronizării și setări",
+        "data": {
+          "schedule": "Sincronizare automată",
+          "time": "Ora sincronizării automate",
+          "notes": "Nota scrisă pe fiecare înregistrare de odometru",
+          "max_increase": "Creșterea maximă la o sincronizare",
+          "unit": "Unitatea de kilometraj folosită în LubeLogger"
+        },
+        "data_description": {
+          "max_increase": "O sincronizare care ar crește kilometrajul cu mai mult decât această valoare este respinsă; protejează de un multiplicator greșit sau de o sursă defectă. 0 dezactivează verificarea."
+        }
+      }
+    },
+    "error": {
+      "template_not_number": "Template-ul nu dă în acest moment un număr."
+    },
+    "abort": {
+      "no_vehicles": "Nu a fost găsită nicio mașină în LubeLogger."
+    }
+  },
+  "selector": {
+    "schedule": {
+      "options": {
+        "off": "Oprită (folosiți serviciul sau butonul)",
+        "daily": "În fiecare zi",
+        "mon": "În fiecare luni",
+        "tue": "În fiecare marți",
+        "wed": "În fiecare miercuri",
+        "thu": "În fiecare joi",
+        "fri": "În fiecare vineri",
+        "sat": "În fiecare sâmbătă",
+        "sun": "În fiecare duminică"
+      }
+    },
+    "urgency": {
+      "options": {
+        "past_due": "Depășit (Past Due)",
+        "very_urgent": "Foarte urgent",
+        "urgent": "Urgent",
+        "not_urgent": "Neurgent"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "odometer": {
+        "name": "Kilometraj"
+      },
+      "reminders_due": {
+        "name": "Remindere de rezolvat"
+      },
+      "past_due": {
+        "name": "Remindere depășite"
+      },
+      "very_urgent": {
+        "name": "Remindere foarte urgente"
+      },
+      "urgent": {
+        "name": "Remindere urgente"
+      },
+      "not_urgent": {
+        "name": "Remindere neurgente"
+      },
+      "last_sync": {
+        "name": "Ultima sincronizare a kilometrajului"
+      }
+    },
+    "binary_sensor": {
+      "maintenance_due": {
+        "name": "Mentenanță necesară"
+      }
+    },
+    "button": {
+      "sync_odometer": {
+        "name": "Sincronizează kilometrajul"
+      }
+    }
+  },
+  "services": {
+    "sync_odometer": {
+      "name": "Sincronizează kilometrajul",
+      "description": "Citește sursa de kilometraj configurată pentru fiecare mașină și adaugă o înregistrare de odometru în LubeLogger dacă valoarea a crescut.",
+      "fields": {
+        "device_id": {
+          "name": "Mașini",
+          "description": "Mașinile de sincronizat. Lăsați gol pentru toate mașinile care au o sursă configurată."
+        }
+      }
+    },
+    "add_odometer": {
+      "name": "Adaugă înregistrare de odometru",
+      "description": "Adaugă în LubeLogger o înregistrare de odometru cu o valoare dată explicit.",
+      "fields": {
+        "device_id": {
+          "name": "Mașină",
+          "description": "Mașina de actualizat."
+        },
+        "odometer": {
+          "name": "Kilometraj",
+          "description": "Valoarea odometrului."
+        },
+        "notes": {
+          "name": "Notă",
+          "description": "Nota înregistrării. Implicit, nota configurată."
+        },
+        "date": {
+          "name": "Dată",
+          "description": "Data înregistrării. Implicit, astăzi."
+        }
+      }
+    },
+    "get_reminders": {
+      "name": "Obține reminderele",
+      "description": "Returnează reminderele din LubeLogger grupate pe mașină și urgență, pentru notificări.",
+      "fields": {
+        "device_id": {
+          "name": "Mașini",
+          "description": "Mașinile incluse. Lăsați gol pentru toate."
+        },
+        "urgencies": {
+          "name": "Urgențe",
+          "description": "Nivelurile de urgență incluse. Implicit: depășit, foarte urgent și urgent."
+        },
+        "refresh": {
+          "name": "Actualizează întâi",
+          "description": "Citește date proaspete din LubeLogger înainte de răspuns."
+        }
+      }
+    }
+  }
+}

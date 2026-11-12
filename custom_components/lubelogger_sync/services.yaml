@@ -1,0 +1,63 @@
+sync_odometer:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          multiple: true
+          filter:
+            - integration: lubelogger_sync
+
+add_odometer:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: lubelogger_sync
+    odometer:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 9999999
+          mode: box
+    notes:
+      required: false
+      selector:
+        text:
+    date:
+      required: false
+      selector:
+        date:
+
+get_reminders:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          multiple: true
+          filter:
+            - integration: lubelogger_sync
+    urgencies:
+      required: false
+      default:
+        - past_due
+        - very_urgent
+        - urgent
+      selector:
+        select:
+          multiple: true
+          translation_key: urgency
+          options:
+            - past_due
+            - very_urgent
+            - urgent
+            - not_urgent
+    refresh:
+      required: false
+      default: true
+      selector:
+        boolean:

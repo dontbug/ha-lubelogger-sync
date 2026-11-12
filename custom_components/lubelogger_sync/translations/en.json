@@ -1,0 +1,198 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to LubeLogger",
+        "description": "Create an API key in LubeLogger (Settings → API Keys) with the **Editor** role. A Viewer key can read reminders but cannot add odometer records.",
+        "data": {
+          "url": "LubeLogger URL",
+          "api_key": "API key"
+        },
+        "data_description": {
+          "url": "The address you open LubeLogger at in the browser, including the port."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to LubeLogger at this URL.",
+      "invalid_auth": "LubeLogger rejected the API key.",
+      "unknown": "Unexpected response from LubeLogger. Check the URL and the server version."
+    },
+    "abort": {
+      "already_configured": "This LubeLogger server is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "LubeLogger Sync",
+        "menu_options": {
+          "vehicle": "Odometer source of a vehicle",
+          "settings": "Sync schedule and settings"
+        }
+      },
+      "vehicle": {
+        "title": "Vehicle",
+        "description": "Choose the vehicle to configure. Vehicles marked ✓ already have an odometer source.",
+        "data": {
+          "vehicle": "Vehicle"
+        }
+      },
+      "source": {
+        "title": "Odometer source – {vehicle}",
+        "description": "LubeLogger currently has **{odometer}** for this vehicle.\n\nPick an entity (a sensor, or a device tracker such as Traccar – you choose the attribute in the next step) **or** write a template. Leave both empty to stop syncing this vehicle.",
+        "data": {
+          "entity_id": "Entity",
+          "template": "Template (optional, overrides the entity)"
+        },
+        "data_description": {
+          "entity_id": "Its state, or one of its attributes, holds the odometer value.",
+          "template": "Must render the final odometer number (no multiplier or offset is applied). See the README for an example."
+        }
+      },
+      "entity": {
+        "title": "Odometer source – {vehicle}",
+        "description": "Source: `{entity}`\n\nValue with the suggested settings: **{preview}** — LubeLogger currently has: **{odometer}**.\n\nOdometer = value × multiplier + offset.",
+        "data": {
+          "attribute": "Attribute",
+          "multiplier": "Multiplier",
+          "offset": "Offset"
+        },
+        "data_description": {
+          "attribute": "Leave empty to use the state of the entity. Traccar: totalDistance.",
+          "multiplier": "0.001 converts metres (Traccar) to kilometres; 0.000621371 converts metres to miles.",
+          "offset": "Added after multiplying, to correct the difference between the GPS distance and the real dashboard odometer."
+        }
+      },
+      "settings": {
+        "title": "Sync schedule and settings",
+        "data": {
+          "schedule": "Automatic sync",
+          "time": "Time of the automatic sync",
+          "notes": "Note written on each odometer record",
+          "max_increase": "Maximum increase per sync",
+          "unit": "Odometer unit used in LubeLogger"
+        },
+        "data_description": {
+          "max_increase": "A sync that would raise the odometer by more than this is rejected, protecting against a wrong multiplier or a faulty source. 0 disables the check."
+        }
+      }
+    },
+    "error": {
+      "template_not_number": "The template does not currently render a number."
+    },
+    "abort": {
+      "no_vehicles": "No vehicles were found in LubeLogger."
+    }
+  },
+  "selector": {
+    "schedule": {
+      "options": {
+        "off": "Off (use the service or button)",
+        "daily": "Every day",
+        "mon": "Every Monday",
+        "tue": "Every Tuesday",
+        "wed": "Every Wednesday",
+        "thu": "Every Thursday",
+        "fri": "Every Friday",
+        "sat": "Every Saturday",
+        "sun": "Every Sunday"
+      }
+    },
+    "urgency": {
+      "options": {
+        "past_due": "Past due",
+        "very_urgent": "Very urgent",
+        "urgent": "Urgent",
+        "not_urgent": "Not urgent"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "odometer": {
+        "name": "Odometer"
+      },
+      "reminders_due": {
+        "name": "Reminders due"
+      },
+      "past_due": {
+        "name": "Past due reminders"
+      },
+      "very_urgent": {
+        "name": "Very urgent reminders"
+      },
+      "urgent": {
+        "name": "Urgent reminders"
+      },
+      "not_urgent": {
+        "name": "Not urgent reminders"
+      },
+      "last_sync": {
+        "name": "Last odometer sync"
+      }
+    },
+    "binary_sensor": {
+      "maintenance_due": {
+        "name": "Maintenance due"
+      }
+    },
+    "button": {
+      "sync_odometer": {
+        "name": "Sync odometer"
+      }
+    }
+  },
+  "services": {
+    "sync_odometer": {
+      "name": "Sync odometer",
+      "description": "Reads the configured odometer source of each vehicle and adds an odometer record in LubeLogger when the value has increased.",
+      "fields": {
+        "device_id": {
+          "name": "Vehicles",
+          "description": "Vehicles to sync. Leave empty to sync every vehicle that has a source configured."
+        }
+      }
+    },
+    "add_odometer": {
+      "name": "Add odometer record",
+      "description": "Adds an odometer record with an explicit value to LubeLogger.",
+      "fields": {
+        "device_id": {
+          "name": "Vehicle",
+          "description": "The vehicle to update."
+        },
+        "odometer": {
+          "name": "Odometer",
+          "description": "The odometer reading."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Note for the record. Defaults to the configured note."
+        },
+        "date": {
+          "name": "Date",
+          "description": "Date of the record. Defaults to today."
+        }
+      }
+    },
+    "get_reminders": {
+      "name": "Get reminders",
+      "description": "Returns LubeLogger reminders grouped by vehicle and urgency, for use in notifications.",
+      "fields": {
+        "device_id": {
+          "name": "Vehicles",
+          "description": "Vehicles to include. Leave empty for all vehicles."
+        },
+        "urgencies": {
+          "name": "Urgencies",
+          "description": "Urgency levels to include. Defaults to past due, very urgent and urgent."
+        },
+        "refresh": {
+          "name": "Refresh first",
+          "description": "Fetch fresh data from LubeLogger before answering."
+        }
+      }
+    }
+  }
+}
