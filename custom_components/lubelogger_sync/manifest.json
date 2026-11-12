@@ -1,6 +1,7 @@
 {
   "domain": "lubelogger_sync",
   "name": "LubeLogger Sync",
+  "categories": ["vehicles_transport.cars_evs"],
   "codeowners": ["@dontbug"],
   "config_flow": true,
   "documentation": "https://github.com/dontbug/ha-lubelogger-sync",
