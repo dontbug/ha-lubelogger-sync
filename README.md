@@ -11,6 +11,10 @@ Tested with LubeLogger 1.7.4. Requires Home Assistant 2025.1 or newer.
 
 ### HACS
 
+[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dontbug&repository=ha-lubelogger-sync&category=integration)
+
+Click the button above, or add the repository by hand:
+
 1. HACS → ⋮ → **Custom repositories**.
 2. Add `https://github.com/dontbug/ha-lubelogger-sync`, type **Integration**.
 3. Install **LubeLogger Sync** and restart Home Assistant.
@@ -28,7 +32,9 @@ A Viewer key can read reminders but cannot add odometer records.
 
 ### 2. Add the integration
 
-**Settings → Devices & services → Add integration → LubeLogger Sync**, then enter:
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=lubelogger_sync)
+
+Click the button above, or go to **Settings → Devices & services → Add integration → LubeLogger Sync**, then enter:
 
 | Field | Example |
 | --- | --- |
